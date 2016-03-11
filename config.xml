@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="storage">
+  <fileLocations type="storage">
+    <musicLocation type="string">/home/pi/SMB_PUB/Music/6_FlashbackFm</musicLocation>
+    <stdOutFile>/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/TempData/stdOut.log</stdOutFile>
+    <stdErrFile>/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/TempData/stdErr.log</stdErrFile>
+    <musicCmdInfo type="string">/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/TempData/lastMusicCmd.xml</musicCmdInfo>
+    <trackInfoFile type="string">/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/TempData/track.info</trackInfoFile>
+    <playlistInfoFile type="string">/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/TempData/playlist.info</playlistInfoFile>
+    <playbackControlPid type="string">/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/PlaybackControl/PlaybackControl.pid</playbackControlPid>
+    <playbackInfo type="string">/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/TempData/PlaybackInfo.xml</playbackInfo>
+    <raspiPlayerDir type="string">/home/pi/ROUTER/2_OTHER/5_RaspiPlayer</raspiPlayerDir>
+    <ctrlPipelineDir type="string">/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/cmd</ctrlPipelineDir>
+  </fileLocations>
+  <playlistParameters type="storage">
+    <firstTrack type="string"/>
+    <shuffle type="int">1</shuffle>
+    <repeat type="int">0</repeat>
+  </playlistParameters>
+  <DaemonTimings>
+    <cmdTimeoutS type="int">7200</cmdTimeoutS>
+    <monitorRateMs type="float">0.3</monitorRateMs>
+    <omxplayertimeout type="float">3.0</omxplayertimeout>
+  </DaemonTimings>
+  <MusicLocationCollection>
+    <MusicLocation id="0">
+      <Name>French Tracks</Name>
+      <Path>/home/pi/SMB_PUB/Music/0_FrancuskiePrzeboje</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>Journey Tracks</Name>
+      <Path>/home/pi/SMB_PUB/Music/1_JourneyGreatestHits</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>2015 Tracks</Name>
+      <Path>/home/pi/SMB_PUB/Music/2_2015_Mix</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>DaftPunk Tracks</Name>
+      <Path>/home/pi/SMB_PUB/Music/3_DaftPunk</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>Italian Tracks</Name>
+      <Path>/home/pi/SMB_PUB/Music/4_Italiano</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>Polish Tracks</Name>
+      <Path>/home/pi/SMB_PUB/Music/5_PolskiePrzeboje</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>FlashbackFm</Name>
+      <Path>/home/pi/SMB_PUB/Music/6_FlashbackFm</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>Franz Ferdinand</Name>
+      <Path>/home/pi/SMB_PUB/Music/7_FranzFerdinand</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>Japanese Tracks</Name>
+      <Path>/home/pi/SMB_PUB/Music/8_Japanese_Music</Path>
+    </MusicLocation>
+  </MusicLocationCollection>
+</configuration>

@@ -1,0 +1,168 @@
+#!/bin/bash
+#
+#
+### BEGIN INIT INFO
+# Provides:          PlaybackStatusDaemon
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Should-Start:      $local_fs $named
+# Should-Stop:       $local_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: PlaybackStatus Daemon
+# Description:       Daemon providing RaspiPlayer playback status
+### END INIT INFO
+
+# ---------------------------------- MACRO ASSIGNMENTS -------------------------------------------
+DAEMON_SBIN=/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/PlaybackStatus/PlaybackStatus.bash
+RASPI_PLAYER=/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/RaspiPlayer.bash
+DAEMON_PID=/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/PlaybackStatus/PlaybackStatus.pid
+CONFIG_XML=/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/config.xml
+PLAYBACK_STATUS_XML=/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/TempData/PlaybackInfo.xml
+NAME=PlaybackStatus
+DESC="RaspiPlayer playback Status Daemon"
+sPlayerState=$(xmlstarlet sel -t -m '//playerState' -v . <$PLAYBACK_STATUS_XML)
+PID="$(cat $DAEMON_PID)"
+sPlaybackProcStatus=$(ps -p $(echo "$PID"))
+# -------------------------------------------------------------------------------------------------
+
+# ---------------------- TEST INPUTS AND MACROS ---------------------------------------------------
+#test -x $DAEMON_SBIN | { echo "PlaybackStatusDaemon- main script could not be found";
+#test -x $CONFIG_XML | { echo "PlaybackStatusDaemon - Config file could not be found";
+#test -x $PLAYBACK_STATUS_XML | { echo "PlaybackStatusDaemon - Config file could not be found";
+# -------------------------------------------------------------------------------------------------
+
+# ----------------------------------- HELPER FUNCTIONS --------------------------------------------
+
+function printUsage
+{
+echo "Supported options:"
+echo "[start] - start RaspiPlayer playback status daemon"
+echo "[stop] - stop RaspiPlayer playback status daemon"
+echo "[restart] - restart RaspiPlayer playback status daemon"
+echo "[status] - returns the RaspiPlayer playback status"
+echo "[getRawStatus] - returns the status of the Shuffle switch"
+echo "[getPlayerState] - returns the player state"
+echo "[getMusicPath] - returns the set music path"
+echo "[getPlaylist] - returns the contents of the music path separated by newline"
+echo "[getCurrentTrack] - returns the current music track or nothing if playback is not active"
+echo "[getVolume] - returns the current db level of the output if playback is active"
+echo "[getRepeatStatus] - returns the status of the repeat switch"
+echo "[getShuffleStatus] - returns the status of the Shuffle switch"
+echo "[getRawStatus] - returns the raw status information"
+echo "[getPlaylistNames] - returns the names of saved playlist locations"
+}
+
+function saveAllFileNames
+{
+	FILES="$2/*"
+	echo "" > $1 #clear file
+	for file in $FILES
+    do
+		echo "$file" >> $1 #append to file
+    done
+}
+
+function printPlaybackStatusSummary
+{
+	repeatStatus="$(xmlstarlet sel -t -m '//repeat' -v . <$CONFIG_XML)"
+	shuffleStatus="$(xmlstarlet sel -t -m '//shuffle' -v . <$CONFIG_XML)"
+	currentVolume="$(xmlstarlet sel -t -m '//volume' -v . <$PLAYBACK_STATUS_XML)"
+	currentTrack=" "
+	if [ "$sPlayerState" != "INACTIVE" ]
+	then
+		currentTrack="$(cat $(xmlstarlet sel -t -m '//trackInfoFile' -v . <$CONFIG_XML))"
+	fi
+	echo "$repeatStatus;$shuffleStatus;$sPlayerState;$currentVolume;$currentTrack"
+}
+
+function printPlaylistNames
+{
+	echo "$(xmlstarlet sel -t -m '//Name' -c "." -n "$CONFIG_XML")"
+}
+
+# -------------------------------------------------------------------------------------------------
+
+case "$1" in
+ start)
+ 	if [[ "$sPlaybackProcStatus" != *"PlaybackStatus"* ]]
+	then
+		echo "Starting $NAME"
+		"$RASPI_PLAYER" resetSettings
+		start-stop-daemon --start --background --make-pidfile --pidfile $DAEMON_PID --exec "$DAEMON_SBIN" "$CONFIG_XML"
+	else
+		echo "Playback Status already running"
+	fi
+	echo "$?"
+	;;
+ stop)
+  	if [[ "$sPlaybackProcStatus" == *"PlaybackStatus"* ]]
+	then
+		echo "Stopping $NAME"
+		start-stop-daemon --stop --pidfile $DAEMON_PID
+	else
+		echo "Playback Status not found"
+	fi
+ 	echo "$?"
+ 	;;
+ restart)
+ 	$0 stop
+ 	sleep 8
+ 	$0 start
+ 	;;
+ status)
+ 	echo $(ps --pid $(cat $DAEMON_PID))
+	echo "Player state:" "$(xmlstarlet sel -t -m '//playerState' -v . <$PLAYBACK_STATUS_XML)"
+ 	exit $?
+    ;;
+ getState)
+	echo "$(xmlstarlet sel -t -m '//playerState' -v . <$PLAYBACK_STATUS_XML)"
+ 	exit $?
+    ;;
+ getRawStatus)
+	printPlaybackStatusSummary
+	 exit $?
+    ;;
+ getMusicPath)
+	echo "$(xmlstarlet sel -t -m '//musicLocation' -v . <$CONFIG_XML)"
+ 	exit $?
+    ;;
+ getCurrentTrack)
+	if [ "$sPlayerState" == "RUNNING" ] || [ "$sPlayerState" == "PAUSED" ]
+	then
+		echo "$(cat $(xmlstarlet sel -t -m '//trackInfoFile' -v . <$CONFIG_XML))"
+	fi
+ 	exit $?
+    ;;
+ getVolume)
+	echo "$(xmlstarlet sel -t -m '//volume' -v . <$PLAYBACK_STATUS_XML)"
+ 	exit $?
+    ;;
+ getRepeatStatus)
+	echo "$(xmlstarlet sel -t -m '//repeat' -v . <$CONFIG_XML)"
+ 	exit $?
+    ;;
+ getShuffleStatus)
+	echo "$(xmlstarlet sel -t -m '//shuffle' -v . <$CONFIG_XML)"
+ 	exit $?
+    ;;
+ getPlaylist)
+	sMusicPath="$(xmlstarlet sel -t -m '//musicLocation' -v . <$CONFIG_XML)"
+	sPlaylistInfoPath="$(xmlstarlet sel -t -m '//playlistInfoFile' -v . <$CONFIG_XML)"
+	saveAllFileNames $sPlaylistInfoPath $sMusicPath
+	echo "$(cat $sPlaylistInfoPath)"
+ 	exit $?
+    ;;
+ getPlaylistNames)
+	sPlaylistData=$(echo "$(xmlstarlet sel -t -m '//Name' -v . -n "$CONFIG_XML")")
+	echo "$sPlaylistData" | tr "\n" ";"
+ 	exit $?
+    ;;
+ *)
+    N=/etc/init.d/$NAME
+	echo $"Usage: $N [option]"
+	printUsage
+	exit 1
+	;;
+esac
+exit 0

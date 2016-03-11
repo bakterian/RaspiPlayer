@@ -1,0 +1,1 @@
+/usr/bin/omxplayer: line 67:  4216 Terminated              LD_LIBRARY_PATH="$OMXPLAYER_LIBS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" $OMXPLAYER_BIN "$@"

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<lastMusicCmd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="storage">
+  <command type="enum">STOP</command>
+  <timestamp type="long">1457712842</timestamp>
+  <sender type="enum">PlaybackControl</sender>
+</lastMusicCmd>
