@@ -15,6 +15,7 @@ function printScriptUsage
 	echo "[pause | resume] - pause playback (if active)"
 	#echo "[previousTrack] - start previous track"
 	echo "[nextTrack] - start next track"
+	echo "[changeTrack] <FileNameInPlaylist> - change track to the given name within playlist"
 	echo "[repeat]  <0 | 1> - repeat playback  [default off]"
 	echo "[shuffle] <0 | 1> - shuffle playlist [default off]"
 	echo "[resetSettings] -  changing configuration to default values"
@@ -22,7 +23,7 @@ function printScriptUsage
 
 function isPathValid
 {
-	if [ -f $1 ] || [ -d $1 ]; then
+	if [ -f "$1" ] || [ -d "$1" ]; then
 		#0 - true
 		echo "0" 
 	else
@@ -34,6 +35,32 @@ function isPathValid
 function saveMusicFileOffset
 {
 	xmlstarlet ed --inplace -u '//firstTrack' -v "$1" "$sConfigFilePath"
+}
+
+function changeMusicTrack
+{
+	sPlaylistDir=$(xmlstarlet sel -t -m '//musicLocation' -v . <$sConfigFilePath)
+	sMusicPath="$sPlaylistDir/$1"
+	echo "$sMusicPath"
+	sPathCheck="$(echo "$(isPathValid "$sMusicPath")")"
+	if [ "$sPathCheck" == "0" ]; then
+		xmlstarlet ed --inplace -u '//command' -v "CHANGING_TRACK" "$sMusicCmdInfoPath"
+		
+		if [[ "$sPlaybackProcStatus" == *"PlaybackControl"* ]] && [ -n "$sOmxPlayerStatus" ]
+		then
+			kill -9 $(echo "$sPid")
+			killall omxplayer.bin
+		fi
+		
+		xmlstarlet ed --inplace -u '//firstTrack' -v "$sMusicPath" "$sConfigFilePath"
+		
+		xmlstarlet ed --inplace -u '//shuffle' -v "0" "$sConfigFilePath"
+		
+		echo "Starting playback Control"
+		nohup "$sPlaybackControlPath" "$sConfigFilePath" > "$sStdOutFilePath" 2> "$sStdErrFilePath" & echo $! > "$sPidPath"
+	else
+		echo "[trackChange] music file was not found."
+	fi
 }
 
 function saveMusicPath
@@ -56,7 +83,7 @@ function setShuffle
 function resetSettingsToDefaults
 {
 	xmlstarlet ed --inplace -u '//musicLocation' -v "/home/pi/SMB_PUB/Music/5_PolskiePrzeboje" "$sConfigFilePath"
-	#xmlstarlet ed --inplace -u '//firstTrack' -v "" "$sConfigFilePath"
+	xmlstarlet ed --inplace -u '//firstTrack' -v "" "$sConfigFilePath"
 	#xmlstarlet ed --inplace -u '//shuffle' -v "0" "$sConfigFilePath"
 	#xmlstarlet ed --inplace -u '//repeat' -v "0" "$sConfigFilePath"
 	
@@ -85,6 +112,7 @@ function stopPlaybackControl
 	else
 		echo "StopCmd: Playback is already inactive"
 	fi
+	resetSettingsToDefaults
 }
 
 function sendStartCmd
@@ -288,6 +316,11 @@ do
 	  resetSettings)
 	  resetSettingsToDefaults
 	  shift
+	  break
+	  ;;
+	  changeTrack)
+	  changeMusicTrack "$2"
+	  shift 2
 	  break
 	  ;;
       -h | --help)
