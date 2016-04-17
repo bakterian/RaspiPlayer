@@ -1,7 +1,3 @@
 # Git ignore file very useful when dealing with temp, auto-generated code.
-TempData/*
-PlaybackControl/*
-config.xml
-PlaybackStatus/PlaybackStatus.pid
-PlaybackControl.pid
+
 
