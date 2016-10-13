@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <playbackInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="storage">
-  <volume type="string"> 0.00dB</volume>
-  <playerState type="string">RUNNING</playerState>
+  <volume type="string">-80.00dB</volume>
+  <playerState type="string">INACTIVE</playerState>
 </playbackInfo>

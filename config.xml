@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="storage">
   <fileLocations type="storage">
-    <musicLocation type="string">/home/pi/SMB_PUB/Music/4_Italiano</musicLocation>
+    <musicLocation type="string">/home/pi/SMB_PUB/Music/5_PolskiePrzeboje</musicLocation>
     <stdOutFile>/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/TempData/stdOut.log</stdOutFile>
     <stdErrFile>/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/TempData/stdErr.log</stdErrFile>
     <musicCmdInfo type="string">/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/TempData/lastMusicCmd.xml</musicCmdInfo>
@@ -13,7 +13,7 @@
     <ctrlPipelineDir type="string">/home/pi/ROUTER/2_OTHER/5_RaspiPlayer/cmd</ctrlPipelineDir>
   </fileLocations>
   <playlistParameters type="storage">
-    <firstTrack type="string">/home/pi/SMB_PUB/Music/4_Italiano/Fabri Fibra feat. Luca Carboni - Fisico e politico.mp3</firstTrack>
+    <firstTrack type="string"/>
     <shuffle type="int">0</shuffle>
     <repeat type="int">0</repeat>
   </playlistParameters>
@@ -58,6 +58,18 @@
     <MusicLocation id="0">
       <Name>Japanese Tracks</Name>
       <Path>/home/pi/SMB_PUB/Music/8_Japanese_Music</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>80 Hits</Name>
+      <Path>/home/pi/SMB_PUB/Music/9_80_Hits</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>2016 Tracks</Name>
+      <Path>/home/pi/SMB_PUB/Music/10_2016_Mix</Path>
+    </MusicLocation>
+    <MusicLocation id="0">
+      <Name>Rock Music</Name>
+      <Path>/home/pi/SMB_PUB/Music/11_Rock</Path>
     </MusicLocation>
   </MusicLocationCollection>
 </configuration>
